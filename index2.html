@@ -1,0 +1,1860 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Run Time Assessoria de corrida</title>
+    <meta
+      name="description"
+      content="Assessoria esportiva de corrida com treinos personalizados. Transforme sua corrida com a Run Time!"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --red-600: #dc2626;
+        --red-700: #b91c1c;
+        --red-800: #991b1b;
+        --red-900: #7f1d1d;
+        --black: #000000;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-400: #9ca3af;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #374151;
+        --gray-800: #1f2937;
+        --white: #ffffff;
+        --green-400: #4ade80;
+        --green-500: #22c55e;
+        --green-600: #16a34a;
+        --green-700: #15803d;
+        --blue-600: #2563eb;
+        --blue-700: #1d4ed8;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        overflow-x: hidden;
+      }
+
+      h1 {
+        font-size: 1.875rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      h2 {
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+
+      h4 {
+        font-size: 1.125rem;
+        font-weight: 600;
+      }
+
+      .main-background {
+        background: linear-gradient(
+          135deg,
+          var(--red-900) 0%,
+          var(--black) 50%,
+          var(--red-800) 100%
+        );
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 448px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      @media (min-width: 768px) {
+        .container {
+          max-width: 512px;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .container {
+          max-width: 576px;
+        }
+      }
+
+      @media (min-width: 1280px) {
+        .container {
+          max-width: 672px;
+        }
+      }
+
+      .header-section {
+        padding: 2rem 1rem;
+      }
+
+      .profile-section {
+        text-align: center;
+        margin-bottom: 2rem;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s ease forwards;
+      }
+
+      @keyframes fadeInUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .profile-image-wrapper {
+        position: relative;
+        width: 96px;
+        height: 96px;
+        margin: 0 auto 1rem;
+        transition: transform 0.2s ease;
+        cursor: pointer;
+      }
+
+      .profile-image-wrapper:hover {
+        transform: scale(1.05);
+      }
+
+      .profile-image-wrapper:active {
+        transform: scale(0.95);
+      }
+
+      .profile-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--white);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      .profile-title {
+        margin-bottom: 0.5rem;
+        color: var(--white);
+      }
+
+      .profile-description {
+        color: #e5e7eb;
+        margin-bottom: 1rem;
+        padding: 0 1rem;
+      }
+
+      .gallery-wrapper {
+        margin-bottom: 2rem;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: fadeInUp 0.6s ease 0.2s forwards;
+      }
+
+      .gallery-container {
+        position: relative;
+        height: 220px;
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      @media (min-width: 768px) {
+        .gallery-container {
+          height: 256px;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .gallery-container {
+          height: 320px;
+        }
+      }
+
+      @media (min-width: 1280px) {
+        .gallery-container {
+          height: 384px;
+        }
+      }
+
+      .gallery-image-wrapper {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        transition: opacity 1s ease;
+      }
+
+      .gallery-image-wrapper.active {
+        opacity: 1;
+      }
+
+      .gallery-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .gallery-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+      }
+
+      .gallery-caption {
+        position: absolute;
+        bottom: 1rem;
+        left: 1rem;
+        color: var(--white);
+        opacity: 0.9;
+      }
+
+      .gallery-dots {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .gallery-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.4);
+        transition: background 0.3s ease;
+      }
+
+      .gallery-dot.active {
+        background: var(--white);
+      }
+
+      .links-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .link-button {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        border-radius: 1rem;
+        border: none;
+        color: var(--white);
+        text-align: left;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .link-button:nth-child(1) {
+        background: linear-gradient(to right, var(--red-600), var(--red-800));
+        animation: fadeInUp 0.6s ease 0.3s forwards;
+      }
+
+      .link-button:nth-child(2) {
+        background: linear-gradient(to right, var(--black), var(--gray-800));
+        animation: fadeInUp 0.6s ease 0.4s forwards;
+      }
+
+      .link-button:nth-child(3) {
+        background: linear-gradient(to right, var(--red-700), var(--black));
+        animation: fadeInUp 0.6s ease 0.5s forwards;
+      }
+
+      .link-button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .link-button:active {
+        transform: scale(0.98);
+      }
+
+      .link-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .link-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .link-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+      }
+
+      .link-text {
+        text-align: left;
+      }
+
+      .link-title {
+        font-weight: 500;
+        font-size: 1rem;
+      }
+
+      .link-subtitle {
+        font-size: 0.875rem;
+        opacity: 0.8;
+      }
+
+      .chevron-icon {
+        opacity: 0.6;
+        width: 20px;
+        height: 20px;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem;
+        border-radius: 50%;
+        background: var(--white);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+        text-decoration: none;
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .social-link:nth-child(1) {
+        animation: fadeInUp 0.6s ease 0.6s forwards;
+      }
+
+      .social-link:nth-child(2) {
+        animation: fadeInUp 0.6s ease 0.7s forwards;
+      }
+
+      .social-link:nth-child(3) {
+        animation: fadeInUp 0.6s ease 0.8s forwards;
+      }
+
+      .social-link:hover {
+        transform: scale(1.1);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .social-link:active {
+        transform: scale(0.9);
+      }
+
+      .social-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .social-icon.instagram,
+      .social-icon.youtube {
+        color: var(--red-600);
+      }
+
+      .social-icon.email {
+        color: var(--gray-700);
+      }
+
+      .section {
+        min-height: 100vh;
+        padding: 4rem 1rem;
+        opacity: 0;
+        transform: translateY(50px);
+        transition:
+          opacity 0.8s ease,
+          transform 0.8s ease;
+      }
+
+      .section.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .section-white {
+        background: var(--white);
+      }
+
+      .section-gray {
+        background: var(--gray-100);
+      }
+
+      .section-gradient {
+        background: linear-gradient(
+          135deg,
+          var(--red-600) 0%,
+          var(--black) 100%
+        );
+      }
+
+      .section-black {
+        background: var(--black);
+      }
+
+      .section-container {
+        max-width: 1024px;
+        margin: 0 auto;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .section-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        margin-bottom: 1.5rem;
+      }
+
+      .badge-red {
+        background: rgba(220, 38, 38, 0.1);
+        color: var(--red-600);
+      }
+
+      .badge-black {
+        background: var(--black);
+        color: var(--white);
+      }
+
+      .badge-white {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        color: var(--white);
+      }
+
+      .badge-icon {
+        width: 24px;
+        height: 24px;
+      }
+
+      .section-title {
+        margin-bottom: 1rem;
+      }
+
+      .section-description {
+        max-width: 672px;
+        margin: 0 auto;
+      }
+
+      .grid {
+        display: grid;
+        gap: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .grid-2 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .location-card {
+        background: var(--gray-50);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        transition: transform 0.2s ease;
+      }
+
+      .location-card:hover {
+        transform: scale(1.02);
+      }
+
+      .location-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .location-icon-wrapper {
+        padding: 0.75rem;
+        background: rgba(220, 38, 38, 0.1);
+        border-radius: 50%;
+      }
+
+      .location-icon {
+        color: var(--red-600);
+        width: 20px;
+        height: 20px;
+      }
+
+      .location-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        color: var(--gray-600);
+      }
+
+      .location-info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .info-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      .plan-card {
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+        position: relative;
+      }
+
+      .plan-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+      }
+
+      .plan-presencial {
+        background: var(--black);
+        border: 4px solid var(--red-600);
+      }
+
+      .plan-online {
+        background: var(--white);
+        border: 1px solid var(--gray-200);
+      }
+
+      .plan-badge {
+        position: absolute;
+        top: -1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--red-600);
+        color: var(--white);
+        padding: 0.25rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+      }
+
+      .plan-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+
+      .plan-icon-wrapper {
+        padding: 1rem;
+        border-radius: 50%;
+        width: fit-content;
+        margin: 0 auto 1rem;
+      }
+
+      .plan-presencial .plan-icon-wrapper {
+        background: rgba(220, 38, 38, 0.1);
+      }
+
+      .plan-online .plan-icon-wrapper {
+        background: rgba(37, 99, 235, 0.1);
+      }
+
+      .plan-icon {
+        width: 32px;
+        height: 32px;
+      }
+
+      .plan-presencial .plan-icon {
+        color: var(--red-600);
+      }
+
+      .plan-online .plan-icon {
+        color: var(--blue-600);
+      }
+
+      .plan-price {
+        font-size: 2rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .plan-period {
+        font-size: 0.875rem;
+      }
+
+      .plan-presencial .plan-period {
+        color: var(--gray-300);
+      }
+
+      .plan-online .plan-period {
+        color: var(--gray-500);
+      }
+
+      .plan-features {
+        list-style: none;
+        margin-bottom: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .plan-feature {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .feature-icon {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+      }
+
+      .plan-presencial .feature-icon {
+        color: var(--green-400);
+      }
+
+      .plan-online .feature-icon {
+        color: var(--green-500);
+      }
+
+      .plan-presencial .plan-features {
+        color: var(--gray-300);
+      }
+
+      .plan-online .plan-features {
+        color: var(--gray-600);
+      }
+
+      .plan-button {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: none;
+        color: var(--white);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .plan-presencial .plan-button {
+        background: var(--red-600);
+      }
+
+      .plan-presencial .plan-button:hover {
+        background: var(--red-700);
+      }
+
+      .plan-online .plan-button {
+        background: var(--blue-600);
+      }
+
+      .plan-online .plan-button:hover {
+        background: var(--blue-700);
+      }
+
+      .experimental-benefits {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        max-width: 672px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .benefits-title {
+        color: var(--white);
+        margin-bottom: 1.5rem;
+      }
+
+      .benefits-grid {
+        display: grid;
+        gap: 1.5rem;
+        text-align: left;
+      }
+
+      @media (min-width: 768px) {
+        .benefits-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      .benefit-item {
+        display: flex;
+        align-items: start;
+        gap: 0.75rem;
+      }
+
+      .benefit-icon {
+        color: var(--green-400);
+        margin-top: 0.25rem;
+        width: 20px;
+        height: 20px;
+        flex-shrink: 0;
+      }
+
+      .benefit-title {
+        color: var(--white);
+        margin-bottom: 0.25rem;
+      }
+
+      .benefit-description {
+        color: var(--gray-300);
+        font-size: 0.875rem;
+      }
+
+      .cta-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        .cta-buttons {
+          flex-direction: row;
+          justify-content: center;
+        }
+      }
+
+      .cta-button {
+        padding: 1rem 2rem;
+        border-radius: 1rem;
+        border: none;
+        font-size: 1.125rem;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          background 0.2s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .cta-button:hover {
+        transform: scale(1.05);
+      }
+
+      .cta-button:active {
+        transform: scale(0.95);
+      }
+
+      .cta-primary {
+        background: var(--white);
+        color: var(--red-600);
+      }
+
+      .cta-primary:hover {
+        background: var(--gray-100);
+      }
+
+      .cta-whatsapp {
+        background: var(--green-600);
+        color: var(--white);
+      }
+
+      .cta-whatsapp:hover {
+        background: var(--green-700);
+      }
+
+      .footer {
+        background: var(--black);
+        padding: 3rem 1rem;
+      }
+
+      .footer-container {
+        max-width: 1024px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .footer-title {
+        color: var(--white);
+        margin-bottom: 1rem;
+      }
+
+      .footer-description {
+        color: var(--gray-400);
+        margin-bottom: 2rem;
+      }
+
+      .footer-social {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .footer-social-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        border-radius: 50%;
+        background: var(--gray-800);
+        color: var(--white);
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease;
+        text-decoration: none;
+      }
+
+      .footer-social-link:hover {
+        background: var(--red-600);
+        transform: scale(1.1);
+      }
+
+      .footer-social-link:active {
+        transform: scale(0.9);
+      }
+
+      .footer-credit {
+        color: var(--gray-500);
+      }
+
+      .footer-credit a {
+        color: var(--red-600);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .footer-credit a:hover {
+        color: var(--red-700);
+      }
+
+      .plans-grid {
+        max-width: 768px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Main Header -->
+    <div class="main-background">
+      <div class="header-section">
+        <div class="container">
+          <!-- Profile Section -->
+          <div class="profile-section">
+            <div class="profile-image-wrapper">
+              <img
+                src="img/logo-runtime.webp"
+                alt="Profile"
+                class="profile-image"
+              />
+            </div>
+            <h1 class="profile-title">Família Run Time de CORRIDA</h1>
+            <p class="profile-description">
+              ❤️Te mostramos que correr é alegria, poder e superação. A corrida
+              é um portal de transformação. Corra, e você nunca mais será o
+              mesmo.🖤
+            </p>
+          </div>
+
+          <!-- Photo Gallery -->
+          <div class="gallery-wrapper">
+            <div class="gallery-container" id="gallery">
+              <!-- Gallery images will be inserted by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Navigation Links -->
+          <div class="links-container">
+            <button class="link-button" onclick="scrollToSection('unidades')">
+              <div class="link-content">
+                <div class="link-left">
+                  <svg
+                    class="link-icon"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                  <div class="link-text">
+                    <div class="link-title">
+                      Unidades / Dias e locais de treinos
+                    </div>
+                    <div class="link-subtitle">Conheça onde treinamos</div>
+                  </div>
+                </div>
+                <svg
+                  class="chevron-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </div>
+            </button>
+
+            <button class="link-button" onclick="scrollToSection('planos')">
+              <div class="link-content">
+                <div class="link-left">
+                  <svg
+                    class="link-icon"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    ></path>
+                  </svg>
+                  <div class="link-text">
+                    <div class="link-title">Planos presencial /online</div>
+                    <div class="link-subtitle">Escolha seu formato</div>
+                  </div>
+                </div>
+                <svg
+                  class="chevron-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </div>
+            </button>
+
+            <button
+              class="link-button"
+              onclick="scrollToSection('experimental')"
+            >
+              <div class="link-content">
+                <div class="link-left">
+                  <svg
+                    class="link-icon"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  <div class="link-text">
+                    <div class="link-title">Agende sua aula Experimental</div>
+                    <div class="link-subtitle">Conheça nossa metodologia</div>
+                  </div>
+                </div>
+                <svg
+                  class="chevron-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  ></path>
+                </svg>
+              </div>
+            </button>
+          </div>
+
+          <!-- Social Links -->
+          <div class="social-links">
+            <a
+              href="https://www.instagram.com/runtimeassessoria/"
+              class="social-link"
+            >
+              <svg
+                class="social-icon instagram"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+                />
+              </svg>
+            </a>
+            <a
+              href="https://www.youtube.com/@runtimeassessoria"
+              class="social-link"
+            >
+              <svg
+                class="social-icon youtube"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+                />
+              </svg>
+            </a>
+            <a
+              href="mailto:contato@runtimeassessoria.com.br"
+              class="social-link"
+            >
+              <svg
+                class="social-icon email"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                ></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unidades Section -->
+    <section id="unidades" class="section section-white">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="section-badge badge-red">
+            <svg
+              class="badge-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              ></path>
+            </svg>
+            <span>Unidades & Locais</span>
+          </div>
+          <h2 class="section-title" style="color: var(--gray-800)">
+            Onde você pode treinar
+          </h2>
+          <p class="section-description" style="color: var(--gray-600)">
+            Temos pontos estratégicos nas principais avenidas da cidade, para
+            que você treine no horário e local mais conveniente.
+          </p>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="location-card">
+            <div class="location-header">
+              <div class="location-icon-wrapper">
+                <svg
+                  class="location-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                </svg>
+              </div>
+              <h3 style="color: var(--gray-800)">UNIDADE RAUL LOPES</h3>
+            </div>
+            <p>av. RAUL LOPES - ao lado do Posto da Guarda Municipal.</p>
+            <div class="location-info">
+              <div class="location-info-item">
+                <svg
+                  class="info-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Seg, Qua - 17h30 às 20h</span>
+              </div>
+              <div class="location-info-item">
+                <svg
+                  class="info-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  ></path>
+                </svg>
+                <span>Aquecimento a cada 15 minutos</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="location-card">
+            <div class="location-header">
+              <div class="location-icon-wrapper">
+                <svg
+                  class="location-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                </svg>
+              </div>
+              <h3 style="color: var(--gray-800)">UNIDADE MARECHAL</h3>
+            </div>
+            <p>
+              av. MARECHAL - embaixo da Ponte da Frei Serafim, quase em frente a
+              Unimed Infantil.
+            </p>
+            <div class="location-info">
+              <div class="location-info-item">
+                <svg
+                  class="info-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Ter, Qui, Sáb - 5h30 às 7h45</span>
+              </div>
+              <div class="location-info-item">
+                <svg
+                  class="info-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  ></path>
+                </svg>
+                <span>Aquecimento a cada 15 minutos</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Planos Section -->
+    <section id="planos" class="section section-gray">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="section-badge badge-black">
+            <svg
+              class="badge-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              ></path>
+            </svg>
+            <span>Planos</span>
+          </div>
+          <h2 class="section-title" style="color: var(--gray-800)">
+            Escolha seu formato ideal
+          </h2>
+          <p class="section-description" style="color: var(--gray-600)">
+            Oferecemos opção presencial e online para se adaptar à sua rotina
+          </p>
+        </div>
+
+        <div class="grid grid-2 plans-grid">
+          <div class="plan-card plan-presencial">
+            <div class="plan-badge">Mais Popular</div>
+            <div class="plan-header">
+              <div class="plan-icon-wrapper">
+                <svg
+                  class="plan-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  ></path>
+                </svg>
+              </div>
+              <h3 style="color: var(--white)">Plano Presencial</h3>
+              <p class="plan-price" style="color: var(--white)">R$ 170</p>
+              <p class="plan-period">por mês</p>
+            </div>
+            <ul class="plan-features">
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Ponto de apoio</span>
+              </li>
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Presença dos treinadores</span>
+              </li>
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Rotina de alongamento e aquecimento</span>
+              </li>
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Orientações e esclarecimento de dúvidas</span>
+              </li>
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Grupo do Whatsapp</span>
+              </li>
+            </ul>
+            <a
+              href="https://wa.me/5586988572768?text=Olá,%20eu%20quero%20entrar%20na%20Assessoria%20pelo%20Plano%20Presencial!"
+              target="_blank"
+              style="text-decoration: none"
+            >
+              <button class="plan-button">Escolher Plano</button>
+            </a>
+          </div>
+
+          <div class="plan-card plan-online">
+            <div class="plan-header">
+              <div class="plan-icon-wrapper">
+                <svg
+                  class="plan-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+              </div>
+              <h3 style="color: var(--gray-800)">Plano Online</h3>
+              <p class="plan-price" style="color: var(--gray-800)">R$ 130</p>
+              <p class="plan-period">por mês</p>
+            </div>
+            <ul class="plan-features">
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Primeiro contato via chamada de vídeo</span>
+              </li>
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Treino de onde você estiver</span>
+              </li>
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Acompanhamento via aplicativo</span>
+              </li>
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Contato via Whatsapp direto com o treinador</span>
+              </li>
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Orientações e esclarecimento de dúvida</span>
+              </li>
+              <li class="plan-feature">
+                <svg
+                  class="feature-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                <span>Grupo do Whatsapp</span>
+              </li>
+            </ul>
+            <a
+              href="https://wa.me/5586988572768?text=Olá,%20eu%20quero%20entrar%20na%20Assessoria%20pelo%20Plano%20Online!"
+              target="_blank"
+              style="text-decoration: none"
+            >
+              <button class="plan-button">Escolher Plano</button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Aula Experimental Section -->
+    <section id="experimental" class="section section-gradient">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="section-badge badge-white">
+            <svg
+              class="badge-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <span>Aula Experimental</span>
+          </div>
+          <h2 class="section-title" style="color: var(--white)">
+            Experimente gratuitamente
+          </h2>
+          <p class="section-description" style="color: #e5e7eb">
+            Venha conhecer nossa metodologia e ver como podemos transformar sua
+            corrida
+          </p>
+        </div>
+
+        <div class="experimental-benefits">
+          <h3 class="benefits-title">
+            Primeiramente, vamos entender um pouco mais sobre você: o que já faz
+            de atividade física, se deseja começar do zero na corrida ou se já
+            possui experiência. Isso nos ajudará a direcionar você da melhor
+            maneira possível.
+          </h3>
+          <div class="benefits-grid">
+            <div class="benefit-item">
+              <svg
+                class="benefit-icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <div>
+                <h4 class="benefit-title">Investigação completa</h4>
+                <p class="benefit-description">
+                  Análise do seu histórico de atividade física e rotina
+                </p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <svg
+                class="benefit-icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <div>
+                <h4 class="benefit-title">Dinâmica da Assessoria</h4>
+                <p class="benefit-description">
+                  Informações sobre todo o funcionamento da assessoria
+                </p>
+              </div>
+            </div>
+            <div class="benefit-item">
+              <svg
+                class="benefit-icon"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <div>
+                <h4 class="benefit-title">Momento prático</h4>
+                <p class="benefit-description">
+                  O treinador faz uma parte prática para lhe ver correndo e
+                  passar orientações práticas
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cta-buttons">
+          <a
+            href="https://wa.me/5586988572768?text=Olá,%20eu%20quero%20fazer%20uma%20Aula%20Experimental!"
+            target="_blank"
+            style="text-decoration: none"
+          >
+            <button class="cta-button cta-whatsapp">
+              <svg
+                style="width: 20px; height: 20px"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"
+                />
+              </svg>
+              Falar no WhatsApp
+            </button>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer section">
+      <div class="footer-container">
+        <h3 class="footer-title">Pronto para transformar sua corrida?</h3>
+        <p class="footer-description">
+          Entre em contato e vamos conversar sobre seus objetivos
+        </p>
+
+        <div class="footer-social">
+          <a
+            href="https://www.instagram.com/runtimeassessoria/"
+            class="footer-social-link"
+          >
+            <svg
+              style="width: 24px; height: 24px"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"
+              />
+            </svg>
+          </a>
+          <a
+            href="https://www.youtube.com/@runtimeassessoria"
+            class="footer-social-link"
+          >
+            <svg
+              style="width: 24px; height: 24px"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+              />
+            </svg>
+          </a>
+          <a
+            href="mailto:contato@runtimeassessoria.com.br"
+            class="footer-social-link"
+          >
+            <svg
+              style="width: 24px; height: 24px"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+
+        <p class="footer-credit">
+          © 2020 Run Time Assessoria de corrida. Desenvolvido por
+          <a
+            href="https://instagram.com/mateuslucas"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Mateus Lucas</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      // Gallery images data
+      const galleryImages = [
+        "img/01.webp",
+        "img/02.webp",
+        "img/03.webp",
+        "img/04.webp",
+        "img/05.webp",
+        "img/06.webp",
+        "img/07.webp",
+        "img/08.webp",
+        "img/09.webp",
+      ];
+
+      let currentImageIndex = 0;
+
+      // Initialize gallery
+      function initGallery() {
+        const gallery = document.getElementById("gallery");
+
+        // Create image wrappers
+        galleryImages.forEach((src, index) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "gallery-image-wrapper";
+          if (index === 0) wrapper.classList.add("active");
+
+          const img = document.createElement("img");
+          img.src = src;
+          img.alt = "Treino em grupo";
+          img.className = "gallery-image";
+
+          const overlay = document.createElement("div");
+          overlay.className = "gallery-overlay";
+
+          wrapper.appendChild(img);
+          wrapper.appendChild(overlay);
+          gallery.appendChild(wrapper);
+        });
+
+        // Create caption
+        const caption = document.createElement("div");
+        caption.className = "gallery-caption";
+        caption.innerHTML = "<p>Nossos treinos em ação 💪</p>";
+        gallery.appendChild(caption);
+
+        // Create dots
+        const dotsContainer = document.createElement("div");
+        dotsContainer.className = "gallery-dots";
+        galleryImages.forEach((_, index) => {
+          const dot = document.createElement("div");
+          dot.className = "gallery-dot";
+          if (index === 0) dot.classList.add("active");
+          dotsContainer.appendChild(dot);
+        });
+        gallery.appendChild(dotsContainer);
+
+        // Start auto-rotation
+        setInterval(rotateGallery, 3000);
+      }
+
+      function rotateGallery() {
+        const wrappers = document.querySelectorAll(".gallery-image-wrapper");
+        const dots = document.querySelectorAll(".gallery-dot");
+
+        wrappers[currentImageIndex].classList.remove("active");
+        dots[currentImageIndex].classList.remove("active");
+
+        currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+
+        wrappers[currentImageIndex].classList.add("active");
+        dots[currentImageIndex].classList.add("active");
+      }
+
+      // Smooth scroll to section
+      function scrollToSection(sectionId) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+
+      // Intersection Observer for section animations
+      function initScrollAnimations() {
+        const sections = document.querySelectorAll(".section");
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+              }
+            });
+          },
+          {
+            threshold: 0.3,
+          },
+        );
+
+        sections.forEach((section) => {
+          observer.observe(section);
+        });
+      }
+
+      // Initialize on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        initGallery();
+        initScrollAnimations();
+      });
+    </script>
+  </body>
+</html>
